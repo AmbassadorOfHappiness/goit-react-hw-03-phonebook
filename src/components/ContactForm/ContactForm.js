@@ -1,56 +1,78 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import style from '../ContactForm/ContactForm.module.css'
 
-class ContactForm extends Component {
-    state = {
-        name: '',
-        number: '',
+
+export default function ContactForm({onAddContact, masContact}) {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+
+    const handleChange = e => {
+        const { name, value } = e.currentTarget;
+        switch (name) {
+            case 'name':
+                setName(value);
+                break;
+            case 'number':
+                setNumber(value);
+                break;
+            default: return;
+        }
     };
 
-    handleChange = e => {
-        const { name, value } = e.target;
-        this.setState({
-        [name]: value,
-        });
-    };
+    // const handleSubmit = e => {
+    //     e.preventDefault();
+    //     onAddContact(name, number);
+    //     setName('');
+    //     setNumber('');
+    // };
 
-      findByName = contactName => {
-    return this.props.contacts.some(({ name }) => name === contactName);
+      const handleSubmit = (evt) => {
+    evt.preventDefault();
+
+    const accessName = masContact.find((el) => el.name === name);
+
+    if (accessName) {
+      alert(`${name} is already in contacts`);
+    } else {
+      const obg = {
+        name: name,
+        number: number,
+      };
+      onAddContact(obg);
+    }
+
+    reset();
   };
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        this.props.onAddContact({ ...this.state });
-        this.setState({ name: "", number: "" });
-    };
-   
-    render() {
-        return (
-            <form className={style.formInner} onSubmit={this.handleSubmit}>
-                <label>Name </label>
-                <input
-                    className='input'
-                    type="text"
-                    value={this.state.name}
-                    name="name"
-                    onChange={ this.handleChange }
-                />
-                <br />
-                <label>Number </label>
-                <input
-                    className='input'
-                    type="tel"
-                    value={this.state.number}
-                    name="number"
-                    onChange={ this.handleChange }
-                    pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                    title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-                    required
-                />
-                <button className='button' type="submit">Add contact</button>
-            </form>
-        )
-    }
-}
+  function reset() {
+    setName("");
+    setNumber("");
+  }
 
-export default ContactForm;
+
+    return (
+        <form className={style.formInner} onSubmit={handleSubmit} >
+            <label>Name </label>
+            <input
+                className='input'
+                type="text"
+                value={name}
+                name="name"
+                onChange={ handleChange }
+            />
+            <br />
+            <label>Number </label>
+            <input
+                className='input'
+                type="tel"
+                value={number}
+                name="number"
+                onChange={ handleChange }
+                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+                title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+                required
+            />
+            <button className='button' type="submit">Add contact</button>
+        </form>
+    )
+}

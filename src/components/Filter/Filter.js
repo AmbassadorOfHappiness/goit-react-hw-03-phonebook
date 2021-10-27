@@ -1,9 +1,13 @@
 import React from 'react';
+import { v4 as uuid } from 'uuid';
+
 
 const Filter = ({ value, onChange }) => {
+     const filterInputId = uuid();
     return (
-        <label>Find contacts by name
+        <label htmlFor={filterInputId}>Find contacts by name
             <input
+                id={filterInputId}
                 className='input'
                 type="text"
                 name="filter"
